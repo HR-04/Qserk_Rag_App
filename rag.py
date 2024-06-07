@@ -1,7 +1,8 @@
 from langchain.prompts import PromptTemplate
-from langchain_community.llms import CTransformers
+from langchain_community.llms import CTransformers, Ollama
 from langchain.chains import RetrievalQA
-from langchain_community.embeddings import SentenceTransformerEmbeddings
+# from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_community.embeddings import OllamaEmbeddings
 from fastapi import FastAPI, Request, Form, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -31,30 +32,30 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-local_llm = "Your local llm here"
+llm = Ollama(model="llama3")
 
-config = {
-    'max_new_tokens': 1024,
-    'context_length': 2048,
-    'repetition_penalty': 1.1,
-    'temperature': 0.1,
-    'top_k': 50,
-    'top_p': 0.9,
-    'stream': True,
-    'threads': int(os.cpu_count() / 2)
-}
+# config = {
+#     'max_new_tokens': 1024,
+#     'context_length': 2048,
+#     'repetition_penalty': 1.1,
+#     'temperature': 0.1,
+#     'top_k': 50,
+#     'top_p': 0.9,
+#     'stream': True,
+#     'threads': int(os.cpu_count() / 2)
+# }
 
-try:
-    llm = CTransformers(
-        model=local_llm,
-        model_type="llama",
-        lib="avx2",
-        **config
-    )
-    logging.debug("LLM Initialized.")
-except Exception as e:
-    logging.error(f"Error initializing LLM: {e}")
-    llm = None
+# try:
+#     llm = CTransformers(
+#         model=local_llm,
+#         model_type="llama3",
+#         lib="avx2",
+#         **config
+#     )
+#     logging.debug("LLM Initialized.")
+# except Exception as e:
+#     logging.error(f"Error initializing LLM: {e}")
+#     llm = None
 
 prompt_template = """Use the following pieces of information to answer the user's question.
 If you don't know the answer, just say that you don't know, don't try to make up an answer.
@@ -67,7 +68,7 @@ Helpful answer:
 """
 
 try:
-    embeddings = SentenceTransformerEmbeddings(model_name="NeuML/pubmedbert-base-embeddings")
+    embeddings = OllamaEmbeddings(model = "llama3")
     logging.debug("Embeddings model initialized.")
 except Exception as e:
     logging.error(f"Error initializing embeddings model: {e}")

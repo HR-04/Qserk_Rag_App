@@ -2,14 +2,14 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Qdrant
-from langchain_community.embeddings import SentenceTransformerEmbeddings
-# from langchain_community.embeddings import OllamaEmbeddings
+#from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_community.embeddings import OllamaEmbeddings
 
 import warnings
 warnings.filterwarnings('ignore', category=FutureWarning, module='huggingface_hub.file_download')
 
-# embeddings = OllamaEmbeddings(model = "llama3")
-embeddings = SentenceTransformerEmbeddings(model_name="NeuML/pubmedbert-base-embeddings")
+embeddings = OllamaEmbeddings(model = "llama3")
+# embeddings = SentenceTransformerEmbeddings(model_name="NeuML/pubmedbert-base-embeddings")
 
 print(embeddings)
 
